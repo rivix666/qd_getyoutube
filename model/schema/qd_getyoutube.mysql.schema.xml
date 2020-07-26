@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="qd_getyoutube" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" version="1.0">
+    <object class="qd_getYoutube" table="qd_getyoutube" extends="xPDOSimpleObject">
+        <field key="yt_hash" dbtype="varchar" precision="255" phptype="string" null="false" default=""/>
+        <field key="html" dbtype="mediumtext" phptype="string" null="false" default=""/>
+        <field key="last_update" dbtype="datetime" phptype="datetime" null="true"/>
+    </object>
+</model>
