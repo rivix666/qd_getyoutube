@@ -1,5 +1,4 @@
 <?php
-
 //define("QD_GYT_DEBUG", "QD_GYT_DEBUG");
 
 define("HTML_KEY", "html");
@@ -14,7 +13,7 @@ define("UPDATE_DATE_KEY", "last_update");
 //----------------------------------------------------------
 if (!defined("QD_YT_FUNCTIONS")) {
     define("QD_YT_FUNCTIONS", "QD_YT_FUNCTIONS");
-    function generateNewYtOutput($mdx, $db_obj, $channel_key)
+    function generateNewYtOutput($mdx, $db_obj, $channel_key, $th_tpl)
     {
         $output = "";
 
@@ -34,7 +33,7 @@ if (!defined("QD_YT_FUNCTIONS")) {
             $output = $mdx->runSnippet('getYoutube', array(
                 'mode' => 'playlist',
                 'playlist' => $channel_key,
-                'tpl' => 'c_yt_videoThumbTpl',
+                'tpl' => $th_tpl,
                 'limit' => '4',
             ));
         }
@@ -47,7 +46,7 @@ if (!defined("QD_YT_FUNCTIONS")) {
         return $output;
     }
 
-    function showYt($mdx, $channel_key)
+    function showYt($mdx, $channel_key, $th_tpl)
     {
         // Load model
         $model_path = $mdx->getOption('qd_getyoutube.core_path', null, $mdx->getOption('core_path')) . 'model/';
@@ -76,7 +75,7 @@ if (!defined("QD_YT_FUNCTIONS")) {
                 return $yt_obj->get(HTML_KEY);
             } else {
                 // If twelve hours passed from the last update, we need to regenerate yt output
-                $yt_output = generateNewYtOutput($mdx, $yt_obj, $channel_key);
+                $yt_output = generateNewYtOutput($mdx, $yt_obj, $channel_key, $th_tpl);
 
                 // Update db
                 $yt_obj->set(HTML_KEY, $yt_output);
@@ -92,7 +91,7 @@ if (!defined("QD_YT_FUNCTIONS")) {
                 UPDATE_DATE_KEY => date('Y-m-d H:i:s', time()),
             ));
 
-            $yt_output = generateNewYtOutput($mdx, $it, $channel_key);
+            $yt_output = generateNewYtOutput($mdx, $it, $channel_key, $th_tpl);
             $new_entry->set(HTML_KEY, $yt_output);
             $new_entry->set(YT_HASH_KEY, $channel_key);
             $new_entry->save();
@@ -105,4 +104,4 @@ if (!defined("QD_YT_FUNCTIONS")) {
 }
 
 // arg0: $modx ptr, arg1: qd_getYoutube external variables init
-return showYt($modx, !empty($channel_key) ? $channel_key : '');
+return showYt($modx, !empty($channel_key) ? $channel_key : '', !empty($th_tpl) ? $th_tpl : '');
